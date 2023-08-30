@@ -8,8 +8,6 @@ Allows you to use vpk mods
 ### How To:
 * Drop desired vpk to your mods folder inside `\dota 2 beta\game\` (ex: `\dota 2 beta\game\dota_tempcontent`);
 * Open `\dota 2 beta\game\dota\gameinfo.gi` with text editor;
-* Change line 39 to `Game dota_tempcontent`
-* And line 40 to `Mod dota_tempcontent`
 
 gameinfo.gi should look like this:
 ```
@@ -19,8 +17,8 @@ SearchPaths
     // *LANGUAGE* will be replaced with the actual language name. If not running a specific language, these paths will not be mounted
     Game_Language       dota_*LANGUAGE*
     
-    Game                auto_accept
-    Mod                 auto_accept
+    Game                auto_accept // Added
+    Mod                 auto_accept // Added
 ...
 ```
 
