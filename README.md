@@ -12,13 +12,21 @@ Allows you to use vpk mods
 
 gameinfo.gi should look like this:
 ```
-		SearchPaths
-		{
-			// These are optional language paths. They must be mounted first, which is why there are first in the list.
-			// *LANGUAGE* will be replaced with the actual language name. If not running a specific language, these paths will not be mounted
-			Game_Language		dota_*LANGUAGE*
-			
-			Game				auto_accept
-			Mod					auto_accept
+SearchPaths
+{
+    // These are optional language paths. They must be mounted first, which is why there are first in the list.
+    // *LANGUAGE* will be replaced with the actual language name. If not running a specific language, these paths will not be mounted
+    Game_Language       dota_*LANGUAGE*
+    
+    Game                auto_accept
+    Mod                 auto_accept
 ...
+```
+
+You can use `config.json` if the regestry doesn't work.
+
+```
+{
+    "dota2_path": "D:\Steam\steamapps\common\dota 2 beta\game"
+}
 ```
