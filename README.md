@@ -26,7 +26,7 @@ You can use `config.json` if the regestry doesn't work.
 
 ```
 {
-    "dota2_path": "D:\Steam\steamapps\common\dota 2 beta\game"
+    "dota2_path": "D:\\Steam\\steamapps\\common\\dota 2 beta\\game\\"
 }
 ```
 
