@@ -15,11 +15,15 @@ namespace Patcher {
 	bool get_byte_array(std::string file_path, char** ret_array, int* file_size);
 	void apply_patch(std::string file_path, int patch_offset, BYTE replace[], int bytes_to_replace);
 
-	bool patch_gameinfo(bool revert);
+	bool patch_gameinfo();
+
+    bool find_keyword(std::string file_path, std::string keyword);
+    void update_gameinfo_gi(std::string file_path);
+    bool patch_gameinfo_gi();
 }
 
 namespace Globals {
-	inline std::string local_version = "3.0.5.9";
+	inline std::string local_version = "3.0.6.0";
 	inline std::string dota_path;
 
 	inline BYTE gameinfo_pattern[] = { 0X74, 0X00, 0X84, 0XC9, 0X75, 0X00, 0X83, 0XBF };

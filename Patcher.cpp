@@ -1,5 +1,7 @@
 #include "Dota2Patcher.h"
 #include <fstream>
+#include <string>
+#include <sstream>
 
 int Patcher::find_offset(char* array, int array_length, BYTE* pattern, int pattern_length) {
     for (int haystack_index = 0; haystack_index < array_length; haystack_index++) {
@@ -65,22 +67,71 @@ void Patcher::apply_patch(std::string file_path, int patch_offset, BYTE replace[
 }
 
 // client.dll - gameinfo.gi CRC check bypass
-bool Patcher::patch_gameinfo(bool revert) {
+bool Patcher::patch_gameinfo() {
     std::string client_path = Globals::dota_path + "dota\\bin\\win64\\client.dll";
 
     BYTE Replace[] = { 0xEB } ;
-    if (revert) {
-        Globals::gameinfo_pattern[0] = { 0xEB };
-        Replace[0] = 0x74;
-    }
 
     int client_patch_offset = Patcher::find_offset(client_path, Globals::gameinfo_pattern, sizeof(Globals::gameinfo_pattern));
     if (!client_patch_offset) {
-        Output("[-] Gameinfo Bypass Offset is NULL!");
+        Output("[-] Gameinfo Bypass Offset is already patched!");
         return false;
     }
 
     Patcher::apply_patch(client_path, client_patch_offset, Replace, sizeof(Replace));
 
+    Output("[+] Gameinfo Patched");
     return true;
+}
+
+// gameinfo.gi - do modifications
+bool Patcher::find_keyword(std::string file_path, std::string keyword) {
+    std::ifstream file(file_path);
+    std::string line;
+    while (std::getline(file, line)) {
+        if (line.find(keyword) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Patcher::update_gameinfo_gi(std::string file_path) {
+    std::ifstream fileIn(file_path);
+    std::stringstream buffer;
+    buffer << fileIn.rdbuf();
+    std::string content = buffer.str();
+    fileIn.close();
+
+    std::size_t pos = content.find("Game_Language");
+    if (pos != std::string::npos) {
+        std::size_t endOfLine = content.find("\n", pos);
+        if (endOfLine != std::string::npos) {
+            std::string toInsert = "\n\t\t\tGame\t\t\t\tauto_accept // Added\n\t\t\tMod\t\t\t\t\tauto_accept // Added";
+            content.insert(endOfLine + 1, toInsert);
+        }
+
+    }
+
+    std::ofstream fileOut(file_path);
+    fileOut << content;
+    fileOut.close();
+}
+
+bool Patcher::patch_gameinfo_gi() {
+    std::string gameinfo_path = Globals::dota_path + "dota\\gameinfo.gi";
+
+    int found = Patcher::find_keyword(gameinfo_path, "auto_accept");
+    if (found) {
+        Output("[-] Gameinfo.io is already patched!");
+        return false;
+    }
+
+    Patcher::update_gameinfo_gi(gameinfo_path);
+    Output("[+] auto_accept has been added to gameinfo.gi successfully.");
+    return true;
+}
+
+void Patcher::Output(const char* text, ...) {
+	std::cout << text << std::endl;
 }
